@@ -1,0 +1,377 @@
+{
+  "meta": {
+    "title": "The Daily Reflection Tree",
+    "version": "1.0.0",
+    "description": "A deterministic end-of-day reflection tool across three psychological axes: Locus (Victim vs Victor), Orientation (Entitlement vs Contribution), and Radius (Self-Centrism vs Altrocentrism).",
+    "axes": [
+      { "id": "axis1", "name": "Locus", "poles": ["external", "internal"] },
+      { "id": "axis2", "name": "Orientation", "poles": ["entitlement", "contribution"] },
+      { "id": "axis3", "name": "Radius", "poles": ["self", "other"] }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "START",
+      "parentId": null,
+      "type": "start",
+      "text": "Good evening. Glad you're here.\n\nThis is your space — no performance, no right answers. We're just going to look honestly at your day together.\n\nIt takes about 5 minutes. Let's begin.",
+      "options": [],
+      "target": "A1_OPEN",
+      "signal": null
+    },
+    {
+      "id": "A1_OPEN",
+      "parentId": "START",
+      "type": "question",
+      "text": "Let's start simply. If today were a weather report, what would it be?",
+      "options": [
+        { "label": "Sunny — things clicked, I felt on.", "value": "sunny" },
+        { "label": "Overcast — steady, but low energy.", "value": "overcast" },
+        { "label": "Stormy — rough patches, maybe conflict.", "value": "stormy" },
+        { "label": "Foggy — unclear, hard to get traction.", "value": "foggy" }
+      ],
+      "target": null,
+      "signal": null
+    },
+    {
+      "id": "A1_D1",
+      "parentId": "A1_OPEN",
+      "type": "decision",
+      "text": null,
+      "options": [
+        { "condition": "answer=sunny|overcast", "target": "A1_Q_AGENCY_HIGH" },
+        { "condition": "answer=stormy|foggy", "target": "A1_Q_AGENCY_LOW" }
+      ],
+      "target": null,
+      "signal": null
+    },
+    {
+      "id": "A1_Q_AGENCY_HIGH",
+      "parentId": "A1_D1",
+      "type": "question",
+      "text": "You said \"{A1_OPEN.answer}\" — sounds like a relatively workable day. When something went well, what made it happen?",
+      "options": [
+        { "label": "I prepared well or showed up intentionally.", "value": "prepared" },
+        { "label": "The team came through — it was collective.", "value": "team" },
+        { "label": "Honestly, things just fell into place.", "value": "luck" },
+        { "label": "I adapted when the plan changed.", "value": "adapted" }
+      ],
+      "target": "A1_D2",
+      "signal": null
+    },
+    {
+      "id": "A1_Q_AGENCY_LOW",
+      "parentId": "A1_D1",
+      "type": "question",
+      "text": "You said \"{A1_OPEN.answer}\" — sounds like it wasn't easy. When things got hard, what was your first instinct?",
+      "options": [
+        { "label": "Figure out what I could still control.", "value": "control" },
+        { "label": "Wait for someone to step in and fix it.", "value": "wait" },
+        { "label": "Feel stuck — not sure what to do.", "value": "stuck" },
+        { "label": "Push through it on my own.", "value": "push" }
+      ],
+      "target": "A1_D2",
+      "signal": null
+    },
+    {
+      "id": "A1_D2",
+      "parentId": null,
+      "type": "decision",
+      "text": null,
+      "options": [
+        { "condition": "answer=prepared|adapted|control|push", "target": "A1_Q2_INTERNAL" },
+        { "condition": "answer=luck|team|wait|stuck", "target": "A1_Q2_EXTERNAL" }
+      ],
+      "target": null,
+      "signal": null,
+      "_note": "A1_D2 receives from both A1_Q_AGENCY_HIGH and A1_Q_AGENCY_LOW"
+    },
+    {
+      "id": "A1_Q2_INTERNAL",
+      "parentId": "A1_D2",
+      "type": "question",
+      "text": "There's something that didn't go the way you hoped today. When you picture that moment — where do you put the cause?",
+      "options": [
+        { "label": "Mostly on me — I could have done something differently.", "value": "self" },
+        { "label": "Split — both my decisions and outside factors.", "value": "split" },
+        { "label": "Mostly circumstances — I didn't have much say.", "value": "external" }
+      ],
+      "target": "A1_D3",
+      "signal": "axis1:internal"
+    },
+    {
+      "id": "A1_Q2_EXTERNAL",
+      "parentId": "A1_D2",
+      "type": "question",
+      "text": "Even on a tough, foggy, or stormy day — somewhere in it, you made a decision. Can you name the smallest choice you made?",
+      "options": [
+        { "label": "I chose to stay calm when things got tense.", "value": "calm" },
+        { "label": "I asked for help instead of spinning alone.", "value": "help" },
+        { "label": "I kept going even when I wanted to stop.", "value": "kept" },
+        { "label": "I'm honestly not sure I made any meaningful choice.", "value": "none" }
+      ],
+      "target": "A1_D3",
+      "signal": "axis1:external"
+    },
+    {
+      "id": "A1_D3",
+      "parentId": null,
+      "type": "decision",
+      "text": null,
+      "options": [
+        { "condition": "signal=axis1:internal", "target": "A1_R_INTERNAL" },
+        { "condition": "signal=axis1:external", "target": "A1_R_EXTERNAL" }
+      ],
+      "target": null,
+      "signal": null
+    },
+    {
+      "id": "A1_R_INTERNAL",
+      "parentId": "A1_D3",
+      "type": "reflection",
+      "text": "You see your hand in what happened today — not perfectly, maybe not completely, but you're not pointing only outward.\n\nThat's agency. It doesn't mean you controlled everything. It means you stayed in the driver's seat even when the road was rough.\n\nHold that.",
+      "options": [],
+      "target": "BRIDGE_1_2",
+      "signal": "axis1:internal"
+    },
+    {
+      "id": "A1_R_EXTERNAL",
+      "parentId": "A1_D3",
+      "type": "reflection",
+      "text": "Hard days pull attention outward — toward what others did, what didn't work, what you couldn't change. That's a very human response.\n\nBut even in those moments, there's usually one small decision that was yours. Asking for help. Taking a breath. Staying in the room.\n\nThat's where your agency lives. Even when it's quiet.",
+      "options": [],
+      "target": "BRIDGE_1_2",
+      "signal": "axis1:external"
+    },
+    {
+      "id": "BRIDGE_1_2",
+      "parentId": null,
+      "type": "bridge",
+      "text": "Good. Now let's shift from *how you handled things* — to *what you gave*.",
+      "options": [],
+      "target": "A2_OPEN",
+      "signal": null
+    },
+    {
+      "id": "A2_OPEN",
+      "parentId": "BRIDGE_1_2",
+      "type": "question",
+      "text": "Think about one meaningful interaction you had today — with a colleague, a client, your manager, anyone. What was the energy of it?",
+      "options": [
+        { "label": "I gave something — time, effort, perspective.", "value": "gave" },
+        { "label": "I received something — help, feedback, credit.", "value": "received" },
+        { "label": "It felt transactional — equal exchange.", "value": "transactional" },
+        { "label": "I didn't have a meaningful interaction today.", "value": "none" }
+      ],
+      "target": "A2_D1",
+      "signal": null
+    },
+    {
+      "id": "A2_D1",
+      "parentId": "A2_OPEN",
+      "type": "decision",
+      "text": null,
+      "options": [
+        { "condition": "answer=gave", "target": "A2_Q_CONTRIBUTION" },
+        { "condition": "answer=received|transactional|none", "target": "A2_Q_ENTITLEMENT" }
+      ],
+      "target": null,
+      "signal": null
+    },
+    {
+      "id": "A2_Q_CONTRIBUTION",
+      "parentId": "A2_D1",
+      "type": "question",
+      "text": "You said you gave something today. What was the nature of that giving?",
+      "options": [
+        { "label": "I helped someone with something outside my job description.", "value": "beyond" },
+        { "label": "I shared knowledge or taught something.", "value": "taught" },
+        { "label": "I did unglamorous work that no one else wanted.", "value": "unglamorous" },
+        { "label": "I was present and listened when someone needed it.", "value": "listened" }
+      ],
+      "target": "A2_Q2",
+      "signal": "axis2:contribution"
+    },
+    {
+      "id": "A2_Q_ENTITLEMENT",
+      "parentId": "A2_D1",
+      "type": "question",
+      "text": "Sometimes we go through a day focused more on what we're getting — recognition, fairness, credit. Which of these sounds most familiar today?",
+      "options": [
+        { "label": "I felt my effort wasn't noticed or appreciated.", "value": "unnoticed" },
+        { "label": "I felt others weren't pulling their weight.", "value": "others_slack" },
+        { "label": "I was focused on my own deliverables — gave what I had to.", "value": "focused_self" },
+        { "label": "I wasn't really thinking about giving or getting — just surviving.", "value": "surviving" }
+      ],
+      "target": "A2_Q2",
+      "signal": "axis2:entitlement"
+    },
+    {
+      "id": "A2_Q2",
+      "parentId": null,
+      "type": "question",
+      "text": "One more lens on today: was there a moment where you went *beyond* what was asked of you — where no one would have noticed if you hadn't?",
+      "options": [
+        { "label": "Yes — I did something extra, unprompted.", "value": "yes_extra" },
+        { "label": "Sort of — I thought about it but didn't follow through.", "value": "thought_not_done" },
+        { "label": "Not today — I gave what was expected.", "value": "expected_only" },
+        { "label": "No — and today that was actually the right call.", "value": "intentional_no" }
+      ],
+      "target": "A2_D2",
+      "signal": null
+    },
+    {
+      "id": "A2_D2",
+      "parentId": "A2_Q2",
+      "type": "decision",
+      "text": null,
+      "options": [
+        { "condition": "signal=axis2:contribution", "target": "A2_R_CONTRIBUTION" },
+        { "condition": "signal=axis2:entitlement", "target": "A2_R_ENTITLEMENT" }
+      ],
+      "target": null,
+      "signal": null
+    },
+    {
+      "id": "A2_R_CONTRIBUTION",
+      "parentId": "A2_D2",
+      "type": "reflection",
+      "text": "You gave today. That's not nothing — it's the quiet engine of functional teams.\n\nThe best organizations run on discretionary effort: the help no one asked for, the knowledge shared without keeping score, the work done even when it's invisible.\n\nYou added something to the system today. Notice that.",
+      "options": [],
+      "target": "BRIDGE_2_3",
+      "signal": "axis2:contribution"
+    },
+    {
+      "id": "A2_R_ENTITLEMENT",
+      "parentId": "A2_D2",
+      "type": "reflection",
+      "text": "Today you were tracking what you were getting — recognition, fairness, effort from others. That's natural. It's also a signal worth sitting with.\n\nEntitlement isn't a character flaw. It's usually a gap between expectation and reality. The question is: whose job is it to close that gap?\n\nSometimes the answer is 'the organization.' Sometimes it's you — by shifting from what you're owed to what you can give.",
+      "options": [],
+      "target": "BRIDGE_2_3",
+      "signal": "axis2:entitlement"
+    },
+    {
+      "id": "BRIDGE_2_3",
+      "parentId": null,
+      "type": "bridge",
+      "text": "Now let's zoom out one more level. From *what you gave* — to *who you were thinking about*.",
+      "options": [],
+      "target": "A3_OPEN",
+      "signal": null
+    },
+    {
+      "id": "A3_OPEN",
+      "parentId": "BRIDGE_2_3",
+      "type": "question",
+      "text": "When you replay today's biggest challenge in your head right now — who's in the frame?",
+      "options": [
+        { "label": "Just me — it was my problem to solve.", "value": "just_me" },
+        { "label": "Me and one specific person.", "value": "me_and_one" },
+        { "label": "My team — we were all in it together.", "value": "team" },
+        { "label": "The customer or end user we serve.", "value": "customer" }
+      ],
+      "target": "A3_D1",
+      "signal": null
+    },
+    {
+      "id": "A3_D1",
+      "parentId": "A3_OPEN",
+      "type": "decision",
+      "text": null,
+      "options": [
+        { "condition": "answer=just_me|me_and_one", "target": "A3_Q_SELF" },
+        { "condition": "answer=team|customer", "target": "A3_Q_OTHER" }
+      ],
+      "target": null,
+      "signal": null
+    },
+    {
+      "id": "A3_Q_SELF",
+      "parentId": "A3_D1",
+      "type": "question",
+      "text": "It's okay to be focused inward — especially on hard days. But let's stretch the frame a little. Was there anyone today who was affected by your work — even indirectly?",
+      "options": [
+        { "label": "Yes — I can think of someone specific.", "value": "yes_specific" },
+        { "label": "Probably, but I didn't think about them much.", "value": "probably" },
+        { "label": "My work today felt pretty isolated from others.", "value": "isolated" }
+      ],
+      "target": "A3_D2",
+      "signal": "axis3:self"
+    },
+    {
+      "id": "A3_Q_OTHER",
+      "parentId": "A3_D1",
+      "type": "question",
+      "text": "You're already holding others in the frame — that's meaningful. Did you act on that awareness in any way today?",
+      "options": [
+        { "label": "Yes — I checked in on someone or adjusted based on their needs.", "value": "acted" },
+        { "label": "I was aware, but didn't act differently because of it.", "value": "aware_not_acted" },
+        { "label": "It's more that I thought about the bigger mission, not a specific person.", "value": "mission" }
+      ],
+      "target": "A3_D2",
+      "signal": "axis3:other"
+    },
+    {
+      "id": "A3_D2",
+      "parentId": null,
+      "type": "decision",
+      "text": null,
+      "options": [
+        { "condition": "signal=axis3:self", "target": "A3_R_SELF" },
+        { "condition": "signal=axis3:other", "target": "A3_R_OTHER" }
+      ],
+      "target": null,
+      "signal": null
+    },
+    {
+      "id": "A3_R_SELF",
+      "parentId": "A3_D2",
+      "type": "reflection",
+      "text": "Today your attention stayed close — on your own work, your own stress, your own outcomes. That's not wrong. Focused days are real.\n\nBut here's something worth knowing: Maslow's most underappreciated idea was that the healthiest humans eventually orient *outward* — not because they've fixed themselves, but because they've expanded what 'self' even means.\n\nTomorrow: one moment. One glance at how your work lands in someone else's world.",
+      "options": [],
+      "target": "SUMMARY",
+      "signal": "axis3:self"
+    },
+    {
+      "id": "A3_R_OTHER",
+      "parentId": "A3_D2",
+      "type": "reflection",
+      "text": "Your frame includes others — their needs, their experience, the bigger mission. That's perspective-taking in practice.\n\nThis isn't altruism for its own sake. Research consistently shows that people who orient beyond themselves at work report more meaning, more resilience, and more satisfaction — not because life gets easier, but because it gets *larger*.\n\nYou're already doing it.",
+      "options": [],
+      "target": "SUMMARY",
+      "signal": "axis3:other"
+    },
+    {
+      "id": "SUMMARY",
+      "parentId": null,
+      "type": "summary",
+      "text": "Here's what your day looked like through the tree:\n\n**Agency (Axis 1):** Today you leaned toward {axis1.dominant}. {axis1.summary}\n\n**Contribution (Axis 2):** On orientation, you were more {axis2.dominant}. {axis2.summary}\n\n**Radius (Axis 3):** Your frame of concern today was {axis3.dominant}. {axis3.summary}\n\n---\nYou arrived today as \"{A1_OPEN.answer}\". Whatever that meant — you showed up, you reflected, and you looked at it honestly.\n\nThat's not a small thing.",
+      "options": [],
+      "target": "END",
+      "signal": null,
+      "summaryTemplates": {
+        "axis1": {
+          "internal": "You located your choices even when things were hard.",
+          "external": "Tomorrow: find the one small decision that was yours."
+        },
+        "axis2": {
+          "contribution": "You added to the system without being asked.",
+          "entitlement": "Tomorrow: one act of giving before you count what you're owed."
+        },
+        "axis3": {
+          "other": "You held others in the frame — that widens everything.",
+          "self": "Tomorrow: one moment of imagining how your work lands for someone else."
+        }
+      }
+    },
+    {
+      "id": "END",
+      "parentId": "SUMMARY",
+      "type": "end",
+      "text": "Rest well. See you tomorrow.",
+      "options": [],
+      "target": null,
+      "signal": null
+    }
+  ]
+}
